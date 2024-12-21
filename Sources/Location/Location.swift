@@ -7,6 +7,7 @@ public struct Location:
 
  public var latitude: Double { x }
  public var longitude: Double { y }
+ public var components: (x: Double, y:  Double) { (x, y) }
  
  private init(unchecked x: Double, _ y: Double) {
   self.x = x
