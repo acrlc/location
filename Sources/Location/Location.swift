@@ -1,3 +1,5 @@
+import protocol Foundation.LocalizedError
+
 /// A location expressed as coordinates `x` and `y`, and defaults to `unknown`.
 public struct Location:
  Sendable,
@@ -7,13 +9,13 @@ public struct Location:
 
  public var latitude: Double { x }
  public var longitude: Double { y }
- public var components: (x: Double, y:  Double) { (x, y) }
- 
+ public var components: (x: Double, y: Double) { (x, y) }
+
  private init(unchecked x: Double, _ y: Double) {
   self.x = x
   self.y = y
  }
- 
+
  public init(x: Double, y: Double) {
   assert(
    Self.checkCoordinates(x, y),
@@ -22,8 +24,8 @@ public struct Location:
   self.x = x
   self.y = y
  }
- 
- public init(nilLiteral: ()) { self = .unknown }
+
+ public init(nilLiteral _: ()) { self = .unknown }
 
  /// A checked location that returns `unknown` if invalid.
  public static func checked(x: Double, y: Double) -> Self {
@@ -115,10 +117,12 @@ extension Location: LosslessStringConvertible {
  public init?(_ description: String) {
   let split =
    description.split(separator: ",", omittingEmptySubsequences: false)
+    .joined().split(separator: " ", omittingEmptySubsequences: false)
+
   guard split.count == 2 else { return nil }
   guard
-   let x = Double(split[0].trimmingCharacters(in: .whitespaces)),
-   let y = Double(split[1].trimmingCharacters(in: .whitespaces))
+   let x = Double(split[0]),
+   let y = Double(split[1])
   else { return nil }
   self.init(unchecked: x, y)
  }
@@ -157,11 +161,11 @@ extension Location {
   public var description: String {
    "\(north)° N \(west)° W"
   }
-  
+
   let north: Double
   let west: Double
  }
- 
+
  var degress: Degrees { Degrees(north: x, west: -y) }
 }
 
@@ -174,11 +178,11 @@ extension Location {
  @usableFromInline
  final class Delegate: NSObject, CLLocationManagerDelegate {
   public func locationManager(
-   _ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]
+   _: CLLocationManager, didUpdateLocations _: [CLLocation]
   ) {}
 
   public func locationManager(
-   _ manager: CLLocationManager, didFailWithError error: any Error
+   _: CLLocationManager, didFailWithError _: any Error
   ) {}
  }
 
